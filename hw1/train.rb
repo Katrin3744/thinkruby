@@ -35,17 +35,11 @@ class Train
   end
 
   def transition_forward
-    if @train_station != @train_route.last
-      current_station = @train_route.find_index(@train_station)
-      @train_station = @train_route[current_station + 1]
-    end
+    @train_station = next_station
   end
 
   def transition_back
-    if @train_station != @train_route.first
-      current_station = @train_route.find_index(@train_station)
-      @train_station = @train_route[current_station - 1]
-    end
+    @train_station = previous_station
   end
 
   def previous_station
