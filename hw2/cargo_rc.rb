@@ -1,0 +1,3 @@
+class CargoRC < RailwayC
+
+end
