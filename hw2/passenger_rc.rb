@@ -1,0 +1,3 @@
+class PassengerRC < RailwayC
+
+end
