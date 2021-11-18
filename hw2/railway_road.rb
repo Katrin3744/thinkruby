@@ -32,12 +32,9 @@ class RailwayRoad
         show(@stations)
       when 7
         show_station_trains
-      else
-        puts "Попробуйте выбрыть еще раз"
       end
     end
   end
-
 
   private # все последующие методы не должны быть доступны пользователю, так как вызываются отдельно в меню при выборе команды
 
