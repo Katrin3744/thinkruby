@@ -1,3 +1,3 @@
-class PassengerRC < RailwayC
+class PassengerRC < RailwayCarriage
 
 end

@@ -52,19 +52,17 @@ class RailwayRoad
       num_tr = gets.chomp.to_i
       case num_tr
       when 1
-        @trains.push(CargoTrain.new(name))
+        @trains.push(CargoTrain.new(name,"cargo"))
       when 2
-        @trains.push(PassengerTrain.new(name))
+        @trains.push(PassengerTrain.new(name,"passenger"))
       end
     end
   end
 
   def show(something)
-    i = 0
     puts "Список:"
-    something.each do |one_of|
-      i += 1
-      puts "#{i} #{one_of}"
+    something.each_with_index do |one_of,idx|
+      puts "#{idx+1} #{one_of}"
     end
   end
 
@@ -89,38 +87,46 @@ class RailwayRoad
       st_num2 = gets.chomp.to_i
       @routes.push(Route.new(@stations[st_num1 - 1], @stations[st_num2 - 1]))
     when 2
-      puts "Выберите маршрут"
-      show(@routes)
-      route_num = gets.chomp.to_i
-      st_route = @stations.select { |st| !@routes[route_num - 1].stations.include?(st) }
-      if st_route.any?
-        puts "Выберите станцию"
-        show(st_route)
-        st_num1 = gets.chomp.to_i
-        @routes[route_num - 1].add_station(st_route[st_num1 - 1])
-      else
-        "Все станции уже включены в данный маршрут"
-      end
+      add_station_to_route
     when 3
-      puts "Выберите маршрут"
-      show(@routes)
-      route_num = gets.chomp.to_i
-      puts "Выберите станцию"
-      show(@routes[route_num - 1].stations)
-      st_num1 = gets.chomp.to_i
-      tr = @trains.select { |train| train.route == @routes[route_num - 1].stations and train.current_station == @routes[route_num - 1].stations[st_num1 - 1] }
-      if tr.any?
-        tr.each { |train| @routes[route_num - 1].stations[st_num1 - 1].departure_train(train) }
-        tr.each do |train|
-          if !train.transition_forward
-            train.transition_back # крайний случай, когда удалили все станции маршрута поезда не обрабатывается
-          end
-          st2 = @stations.find { |station| station == train.current_station }
-          st2.add_train(train) if st2
-        end
-      end
-      @routes[route_num - 1].delete_station(@routes[route_num - 1].stations[st_num1 - 1]) # необходимо переместить поезд с удаленной станции в маршруте
+      delete_station_from_route
+    end
+  end
 
+  def delete_station_from_route
+    puts "Выберите маршрут"
+    show(@routes)
+    route_num = gets.chomp.to_i
+    puts "Выберите станцию"
+    show(@routes[route_num - 1].stations)
+    st_num1 = gets.chomp.to_i
+    tr = @trains.select { |train| train.route == @routes[route_num - 1].stations and train.current_station == @routes[route_num - 1].stations[st_num1 - 1] }
+    if tr.any?
+      tr.each { |train| @routes[route_num - 1].stations[st_num1 - 1].departure_train(train) }
+      tr.each do |train|
+        if !train.transition_forward
+          train.transition_back # крайний случай, когда удалили все станции маршрута поезда не обрабатывается
+        end
+        st2 = @stations.find { |station| station == train.current_station }
+        st2.add_train(train) if st2
+      end
+    end
+    @routes[route_num - 1].delete_station(@routes[route_num - 1].stations[st_num1 - 1]) # необходимо переместить поезд с удаленной станции в маршруте
+
+  end
+
+  def add_station_to_route
+    puts "Выберите маршрут"
+    show(@routes)
+    route_num = gets.chomp.to_i
+    st_route = @stations.select { |st| !@routes[route_num - 1].stations.include?(st) }
+    if st_route.any?
+      puts "Выберите станцию"
+      show(st_route)
+      st_num1 = gets.chomp.to_i
+      @routes[route_num - 1].add_station(st_route[st_num1 - 1])
+    else
+      "Все станции уже включены в данный маршрут"
     end
   end
 
@@ -159,9 +165,9 @@ class RailwayRoad
     idx = gets.chomp.to_i
     case @trains[tr_num - 1].class.name
     when "PassengerTrain"
-      @trains[tr_num - 1].hook_up(PassengerRC.new(idx))
+      @trains[tr_num - 1].hook_up(PassengerRC.new(idx,"passenger"))
     when "CargoTrain"
-      @trains[tr_num - 1].hook_up(CargoRC.new(idx))
+      @trains[tr_num - 1].hook_up(CargoRC.new(idx,"cargo"))
     end
   end
 
