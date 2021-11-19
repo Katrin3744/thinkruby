@@ -1,3 +1,3 @@
-class CargoRC < RailwayC
+class CargoRC < RailwayCarriage
 
 end
