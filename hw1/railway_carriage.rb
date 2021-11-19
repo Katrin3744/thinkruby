@@ -1,9 +1,8 @@
 class RailwayCarriage
   attr_reader :idx, :type
 
-  def initialize(idx,type)
+  def initialize(idx)
     @idx = idx
-    @type=type
   end
 
 end

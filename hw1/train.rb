@@ -2,11 +2,10 @@ class Train
   attr_reader :railway_carriage, :train_type, :route
   attr_accessor :current_station
 
-  def initialize(number,type)
+  def initialize(number)
     @train_number = number
     @speed = 0
     @route=[]
-    @type=type
     @railway_carriage = []
   end
 
@@ -33,7 +32,7 @@ class Train
 
   def hook_up(railway_carriage)
     if @speed == 0
-      @railway_carriage << railway_carriage if @type==railway_carriage.type
+      @railway_carriage << railway_carriage # проверяется соотвествие типов в дочерних классах, иначе должен быть тип по умолчанию
     end
   end
 

@@ -52,17 +52,17 @@ class RailwayRoad
       num_tr = gets.chomp.to_i
       case num_tr
       when 1
-        @trains.push(CargoTrain.new(name,"cargo"))
+        @trains.push(CargoTrain.new(name))
       when 2
-        @trains.push(PassengerTrain.new(name,"passenger"))
+        @trains.push(PassengerTrain.new(name))
       end
     end
   end
 
   def show(something)
     puts "Список:"
-    something.each_with_index do |one_of,idx|
-      puts "#{idx+1} #{one_of}"
+    something.each_with_index do |one_of, idx|
+      puts "#{idx + 1} #{one_of}"
     end
   end
 
@@ -165,9 +165,9 @@ class RailwayRoad
     idx = gets.chomp.to_i
     case @trains[tr_num - 1].class.name
     when "PassengerTrain"
-      @trains[tr_num - 1].hook_up(PassengerRC.new(idx,"passenger"))
+      @trains[tr_num - 1].hook_up(PassengerRC.new(idx))
     when "CargoTrain"
-      @trains[tr_num - 1].hook_up(CargoRC.new(idx,"cargo"))
+      @trains[tr_num - 1].hook_up(CargoRC.new(idx))
     end
   end
 
