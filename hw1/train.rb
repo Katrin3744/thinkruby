@@ -1,12 +1,13 @@
 class Train
-  attr_reader :number_of_railway_carriage, :train_type, :route
+
+  attr_reader :railway_carriage, :train_type, :route
   attr_accessor :current_station
 
-  def initialize(number, type, railway_carriage)
+  def initialize(number)
     @train_number = number
-    @train_type = type
     @speed = 0
-    @number_of_railway_carriage = railway_carriage
+    @route = []
+    @railway_carriage = []
   end
 
   def pick_up_speed
@@ -15,18 +16,7 @@ class Train
 
   def slow_speed
     @speed = 0
-  end
 
-  def hook_up
-    if @speed == 0
-      @number_of_railway_carriage += 1
-    end
-  end
-
-  def unhook
-    if @speed == 0
-      @number_of_railway_carriage -= 1
-    end
   end
 
   def train_route_add(route)
@@ -41,6 +31,21 @@ class Train
   def transition_back
     @current_station = previous_station if previous_station
   end
+
+  def hook_up(railway_carriage)
+    if @speed == 0
+      @railway_carriage << railway_carriage # проверяется соотвествие типов в дочерних классах, иначе должен быть тип по умолчанию
+    end
+  end
+
+  def unhook(railway_carriage)
+    if @speed == 0
+      @railway_carriage.delete(railway_carriage)
+    end
+  end
+
+  private # данные методы используются для поиска следующей и предыдущей станции
+
 
   def previous_station
     current_dest = @route.find_index(@current_station)
