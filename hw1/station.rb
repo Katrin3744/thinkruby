@@ -1,9 +1,10 @@
 class Station
+  include InstanceCounter
 
   attr_reader :trains, :name
 
-
   def initialize(name)
+    register_instance
     @name = name
     @trains = []
   end
@@ -22,4 +23,7 @@ class Station
     @trains.delete(train)
   end
 
+  def self.all
+    ObjectSpace.each_object(Station).to_a
+  end
 end
