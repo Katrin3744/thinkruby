@@ -1,10 +1,15 @@
+#noinspection ALL
 class Train
+  include NameCompany
+  include InstanceCounter
 
-  attr_reader :railway_carriage, :train_type, :route
+  attr_reader :railway_carriage, :train_number, :route
   attr_accessor :current_station
 
   def initialize(number)
-    @train_number = number
+    #!self.class.find(number.to_s)?    @train_number = number.to_s:@train_number="undef"
+    register_instance
+    @train_number = number.to_s #надо ли делать проверку на уникальность номера (реализация выше), если при поиске поезда по номеру необходимо возвращать только один объект?
     @speed = 0
     @route = []
     @railway_carriage = []
@@ -44,8 +49,11 @@ class Train
     end
   end
 
-  private # данные методы используются для поиска следующей и предыдущей станции
+  def self.find (number)
+    ObjectSpace.each_object(Train).find { |train| train.train_number.eql? number }
+  end
 
+  private # данные методы используются для поиска следующей и предыдущей станции
 
   def previous_station
     current_dest = @route.find_index(@current_station)
