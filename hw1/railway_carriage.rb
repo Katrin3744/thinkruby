@@ -1,4 +1,5 @@
 class RailwayCarriage
+  include NameCompany
   attr_reader :idx, :type
 
   def initialize(idx)
