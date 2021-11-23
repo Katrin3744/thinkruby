@@ -42,20 +42,29 @@ class RailwayRoad
     puts "1. Создать станцию"
     puts "2. Создать поезд"
     number = gets.chomp.to_i
-    puts "Введите название"
-    name = gets.chomp
-    case number
-    when 1
-      @stations.push(Station.new(name))
-    when 2
-      puts "Какой поезд вы хотите создать: 1. Грузовой 2.Пассажирский"
-      num_tr = gets.chomp.to_i
-      case num_tr
+    attempt = 0
+    begin
+      puts "Введите название"
+      name = gets.chomp
+      case number
       when 1
-        @trains.push(CargoTrain.new(name))
+        @stations.push(Station.new(name))
       when 2
-        @trains.push(PassengerTrain.new(name))
+        puts "Какой поезд вы хотите создать: 1. Грузовой 2.Пассажирский"
+        num_tr = gets.chomp.to_i
+        case num_tr
+        when 1
+          @trains.push(CargoTrain.new(name))
+        when 2
+          @trains.push(PassengerTrain.new(name))
+        end
       end
+    rescue RuntimeError => e
+      puts e.inspect
+      attempt += 1
+      retry if attempt < 3
+    ensure
+      puts "Выполнено максимальное количество #{attempt} попыток ввода, попробуйте создать заново" if attempt >= 3
     end
   end
 
@@ -79,17 +88,28 @@ class RailwayRoad
     puts "2. Добавить к существующему маршруту станцию"
     puts "3. Удалить у существующего маршрута станцию"
     number = gets.chomp.to_i
-    case number
-    when 1
-      puts "Выберите номера двух станции: начальную и конечную для маршрута"
-      show(@stations)
-      st_num1 = gets.chomp.to_i
-      st_num2 = gets.chomp.to_i
-      @routes.push(Route.new(@stations[st_num1 - 1], @stations[st_num2 - 1]))
-    when 2
-      add_station_to_route
-    when 3
-      delete_station_from_route
+    attempt = 0
+    begin
+      case number
+      when 1
+        if @stations.any?
+          puts "Выберите номера двух станции: начальную и конечную для маршрута"
+          show(@stations)
+          st_num1 = gets.chomp.to_i
+          st_num2 = gets.chomp.to_i
+          @routes.push(Route.new(@stations[st_num1 - 1], @stations[st_num2 - 1])) if st_num1 - 1 != -1 || st_num2 - 1 != -1
+        end
+      when 2
+        add_station_to_route
+      when 3
+        delete_station_from_route
+      end
+      attempt += 1
+    rescue RuntimeError => e
+      puts e.inspect
+      retry if attempt < 3
+    ensure
+      puts "Выполнено максимальное количество #{attempt} попыток ввода, попробуйте создать заново" if attempt >= 3
     end
   end
 
@@ -152,17 +172,26 @@ class RailwayRoad
     tr_num = gets.chomp.to_i
     puts "Выберите дейтсвие: 1. Добавить вагон 2.Удалить вагон"
     number = gets.chomp.to_i
-    case number
-    when 1
-      add_rc_to_train(tr_num)
-    when 2
-      remove_rc_from_train(tr_num) if @trains[tr_num - 1].railway_carriage.any?
+    attempt = 0
+    begin
+      attempt += 1
+      case number
+      when 1
+        add_rc_to_train(tr_num)
+      when 2
+        remove_rc_from_train(tr_num) if @trains[tr_num - 1].railway_carriage.any?
+      end
+    rescue RuntimeError => e
+      puts e.inspect
+      retry if attempt < 3
+    ensure
+      puts "Выполнено максимальное количество #{attempt} попыток ввода, попробуйте создать заново" if attempt >= 3
     end
   end
 
   def add_rc_to_train(tr_num)
     puts "Введите номер вагона"
-    idx = gets.chomp.to_i
+    idx = gets.chomp
     case @trains[tr_num - 1].class.name
     when "PassengerTrain"
       @trains[tr_num - 1].hook_up(PassengerRC.new(idx))

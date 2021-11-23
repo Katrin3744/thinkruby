@@ -5,13 +5,13 @@ module InstanceCounter
   end
 
   module ClassMethods
-    def get_instances
+    def instances
       @instances ||= 0
     end
 
     private
 
-    def set_instances(inst)
+    def instances=(inst)
       # метод необходим для изолированного обращения через модуль InstanceMethods
       @instances = inst
     end
@@ -21,7 +21,7 @@ module InstanceCounter
     protected
 
     def register_instance
-      self.class.send(:set_instances, self.class.get_instances + 1)
+      self.class.send(:instances=, self.class.instances + 1)
     end
   end
 end
