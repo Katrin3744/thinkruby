@@ -7,6 +7,7 @@ class Station
     register_instance
     @name = name
     @trains = []
+    validate!
   end
 
   def add_train(train)
@@ -25,5 +26,11 @@ class Station
 
   def self.all
     ObjectSpace.each_object(Station).to_a
+  end
+
+  private # данные методы используются для поиска следующей и предыдущей станции
+
+  def validate!
+    raise "Параметр отсутствует" if name.nil? || name.length == 0
   end
 end
