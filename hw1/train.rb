@@ -26,6 +26,10 @@ class Train
     false
   end
 
+  def send_railway_carriage(&block)
+    @railway_carriage.each { |rc| block.call(rc) }
+  end
+
   def pick_up_speed
     @speed = @speed + 10
   end

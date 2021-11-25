@@ -28,6 +28,10 @@ class Station
     ObjectSpace.each_object(Station).to_a
   end
 
+  def send_trains(&block)
+    @trains.each { |train| block.call(train) }
+  end
+
   private # данные методы используются для поиска следующей и предыдущей станции
 
   def validate!
