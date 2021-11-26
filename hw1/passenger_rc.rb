@@ -12,7 +12,7 @@ class PassengerRC < RailwayCarriage
   end
 
   def free_seats
-    @seats_or_volume.to_i - @taken_seats.to_i
+    @seats_or_volume.to_i - @taken_seats
   end
 
 end

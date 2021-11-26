@@ -12,6 +12,6 @@ class CargoRC < RailwayCarriage
   end
 
   def free_volume
-    @seats_or_volume.to_i - @taken_volume.to_i
+    @seats_or_volume.to_i - @taken_volume
   end
 end
