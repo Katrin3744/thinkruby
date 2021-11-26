@@ -15,6 +15,8 @@ class RailwayRoad
       puts "5. Переместить поезд по маршруту вперед или назад"
       puts "6. Просмотреть список станций" #
       puts "7. Просмотреть список поездов на станции" #
+      puts "8. Вывести список вагонов у поезда"
+      puts "9. Занять место или обьем в вагоне"
       puts "0. Выход из программы" #
       number = gets.chomp.to_i
       case number
@@ -32,6 +34,10 @@ class RailwayRoad
         show(@stations)
       when 7
         show_station_trains
+      when 8
+        show_trains_rc
+      when 9
+        take_seat_or_volume
       end
     end
   end
@@ -80,7 +86,7 @@ class RailwayRoad
     show(@stations)
     st_num1 = gets.chomp.to_i
     puts "Список поездов:"
-    @stations[st_num1 - 1].trains.each { |train| puts train }
+    @stations[st_num1 - 1].send_trains { |x| puts x }
   end
 
   def creating_changing_route
@@ -194,9 +200,13 @@ class RailwayRoad
     idx = gets.chomp
     case @trains[tr_num - 1].class.name
     when "PassengerTrain"
-      @trains[tr_num - 1].hook_up(PassengerRC.new(idx))
+      puts "Введите количество мест в вагоне"
+      seats_num = gets.chomp
+      @trains[tr_num - 1].hook_up(PassengerRC.new(idx, seats_num))
     when "CargoTrain"
-      @trains[tr_num - 1].hook_up(CargoRC.new(idx))
+      puts "Введите объем вагона"
+      volume = gets.chomp
+      @trains[tr_num - 1].hook_up(CargoRC.new(idx, volume))
     end
   end
 
@@ -206,9 +216,9 @@ class RailwayRoad
     idx = gets.chomp.to_i
     case @trains[tr_num - 1].class.name
     when "PassengerTrain"
-      @trains[tr_num - 1].unhook(@trains[tr_num - 1].railway_carriage[idx])
+      @trains[tr_num - 1].unhook(@trains[tr_num - 1].railway_carriage[idx - 1])
     when "CargoTrain"
-      @trains[tr_num - 1].unhook(@trains[tr_num - 1].railway_carriage[idx])
+      @trains[tr_num - 1].unhook(@trains[tr_num - 1].railway_carriage[idx - 1])
     end
   end
 
@@ -229,6 +239,36 @@ class RailwayRoad
     end
     st2 = @stations.find { |station| station == @trains[tr_num - 1].current_station }
     st2.add_train(@trains[tr_num - 1]) if st2 and !st2.trains.include?(@trains[tr_num - 1])
+  end
+
+  def show_trains_rc
+    puts "Выберите поезд"
+    show(@trains)
+    tr_num = gets.chomp.to_i
+    puts "Список вагонов:"
+    @trains[tr_num - 1].send_railway_carriage { |x| puts x }
+  end
+
+  def take_seat_or_volume
+    puts "Выберите поезд"
+    show(@trains)
+    tr_num = gets.chomp.to_i
+    puts "Выберите вагон:"
+    @trains[tr_num - 1].send_railway_carriage { |x| puts x }
+    idx = gets.chomp.to_i
+    case @trains[tr_num - 1].class.name
+    when "PassengerTrain"
+      puts "Количество свободных мест"
+      puts @trains[tr_num - 1].railway_carriage[idx - 1].free_seats
+      @trains[tr_num - 1].railway_carriage[idx - 1].take_seat
+    when "CargoTrain"
+      puts "Свободный объем"
+      puts @trains[tr_num - 1].railway_carriage[idx - 1].free_volume
+      puts "Введите объем заполнения"
+      volume = gets.chomp.to_i
+      @trains[tr_num - 1].railway_carriage[idx - 1].take_volume(volume)
+    end
+
   end
 
 end
