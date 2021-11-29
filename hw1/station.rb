@@ -1,13 +1,19 @@
 class Station
   include InstanceCounter
+  include Accessors
+  include Validation
 
   attr_reader :trains, :name
 
   def initialize(name)
     register_instance
-    @name = name
+    self.class.instance_variable_set("@name".to_sym,name)
     @trains = []
     validate!
+  end
+
+  def self.try_valid
+    validate :name, :presence
   end
 
   def add_train(train)
@@ -32,9 +38,4 @@ class Station
     @trains.each { |train| block.call(train) }
   end
 
-  private # данные методы используются для поиска следующей и предыдущей станции
-
-  def validate!
-    raise "Параметр отсутствует" if name.nil? || name.length == 0
-  end
 end

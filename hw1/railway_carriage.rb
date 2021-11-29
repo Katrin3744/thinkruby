@@ -1,19 +1,20 @@
 class RailwayCarriage
   include NameCompany
-  attr_reader :idx, :type, :seats_or_volume
+  include Accessors
+  include Validation
 
-  IDX_VALIDATE = /^\d+$/
+  attr_reader :idx, :type, :seats_or_volume # полный допуск к переменным давать нельзя
+
 
   def initialize(idx, seats_or_volume)
-    @idx = idx
-    @seats_or_volume = seats_or_volume
+    self.class.instance_variable_set("@idx".to_sym,idx)
+    self.class.instance_variable_set("@seats_or_volume".to_sym,seats_or_volume)
     validate!
   end
 
-  private # данные методы используются для поиска следующей и предыдущей станции
-
-  def validate!
-    raise "Тип параметра номера не соответсвует необходимому" if idx !~ IDX_VALIDATE
-    raise "Тип параметра не соответсвует необходимому" if seats_or_volume !~ IDX_VALIDATE
+  def self.try_valid
+    validate :idx, :format, /^\d+$/
+    validate :seats_or_volume, :format, /^\d+$/
   end
+
 end

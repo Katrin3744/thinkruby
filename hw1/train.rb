@@ -2,28 +2,24 @@
 class Train
   include NameCompany
   include InstanceCounter
+  include Accessors
+  include Validation
 
-  attr_reader :railway_carriage, :train_number, :route
-  attr_accessor :current_station
-
-  NUMBER_VALID = /^(\d|[a..z]){3}_?(\d|[a..z]){2}$/i
+  attr_history :current_station
+  attr_accessor_with_history :current_station, :railway_carriage, :train_number
+  #strong_attr_accessor
 
   def initialize(number)
-    #!self.class.find(number.to_s)?    @train_number = number.to_s:@train_number="undef"
     register_instance
-    @train_number = number.to_s
-    validate!
-    #надо ли делать проверку на уникальность номера (реализация выше), если при поиске поезда по номеру необходимо возвращать только один объект?
+    self.class.instance_variable_set("@train_number".to_sym,number.to_s)
     @speed = 0
     @route = []
     @railway_carriage = []
+    validate!
   end
 
-  def valid?
-    validate!
-    true
-  rescue
-    false
+  def self.try_valid
+    validate :train_number, :format, /^(\d|[a..z]){3}_?(\d|[a..z]){2}$/i
   end
 
   def send_railway_carriage(&block)
@@ -70,9 +66,8 @@ class Train
 
   private # данные методы используются для поиска следующей и предыдущей станции
 
-  def validate!
-    raise "Номер поезд имеет неверный формат" if train_number !~ NUMBER_VALID
-  end
+
+
 
   def previous_station
     current_dest = @route.find_index(@current_station)

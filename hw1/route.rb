@@ -1,5 +1,6 @@
 class Route
   include InstanceCounter
+  include Validation
 
   attr_reader :stations
 
@@ -7,8 +8,14 @@ class Route
     register_instance
     @stations = []
     @stations.push(first_station, last_station)
-    validate!
   end
+
+  #def self.try_valid
+  # validate :stations.first, :type, "Station"
+  # validate :stations.last, :type, "Station"
+  # validate :stations.first, :presence
+  # validate :stations.last, :presence
+  #end
 
   def add_station(station)
     @stations.insert(-2, station)
