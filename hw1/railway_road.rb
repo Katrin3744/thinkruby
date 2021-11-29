@@ -7,19 +7,19 @@ class RailwayRoad
 
   def seed
     t = Train.new("100")
+    puts t.valid?
     t.pick_up_speed
     t2=CargoTrain.new("12")
     st1 = Station.new("a")
     st2 = Station.new("")
     route = Route.new(st1, st2)
-    t.train_number = "10000"
+    t.train_number= "10000"
     puts t.train_number
     puts t.valid?
     t.train_route_add(route)
     t.transition_forward
     t.current_station = "aaaaa"
     t.current_station = "bbbbb"
-    puts t.train_number
     puts t.current_station_history
     rc1=RailwayCarriage.new("1","12")
     rc2=RailwayCarriage.new("1","12")

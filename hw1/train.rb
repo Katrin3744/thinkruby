@@ -6,7 +6,7 @@ class Train
   include Validation
 
   attr_history :current_station
-  attr_accessor_with_history :current_station, :railway_carriage, :train_number
+  attr_accessor_with_history :train_number,:current_station, :railway_carriage
   #strong_attr_accessor
 
   def initialize(number)
@@ -15,7 +15,7 @@ class Train
     @speed = 0
     @route = []
     @railway_carriage = []
-    validate!
+    valid?
   end
 
   def self.try_valid

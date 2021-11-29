@@ -1,4 +1,5 @@
 module Validation
+
   def self.included(base)
     base.extend ClassMethods
     base.send :include, InstanceMethods
@@ -29,14 +30,13 @@ module Validation
     def validate!
       puts "#{self.class}"
       self.class.try_valid
-    rescue RuntimeError => e
-      puts e.inspect
     end
 
     def valid?
       validate!
       true
-    rescue
+    rescue RuntimeError => e
+      puts e.inspect
       false
     end
 

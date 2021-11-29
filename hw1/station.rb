@@ -9,7 +9,7 @@ class Station
     register_instance
     self.class.instance_variable_set("@name".to_sym,name)
     @trains = []
-    validate!
+    valid?
   end
 
   def self.try_valid

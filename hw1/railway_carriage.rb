@@ -9,7 +9,7 @@ class RailwayCarriage
   def initialize(idx, seats_or_volume)
     self.class.instance_variable_set("@idx".to_sym,idx)
     self.class.instance_variable_set("@seats_or_volume".to_sym,seats_or_volume)
-    validate!
+    valid?
   end
 
   def self.try_valid
