@@ -6,21 +6,20 @@ class Train
   include Validation
 
   attr_history :current_station
-  attr_accessor_with_history :train_number,:current_station, :railway_carriage
+  attr_accessor_with_history :train_number, :current_station, :railway_carriage
   #strong_attr_accessor
 
   def initialize(number)
     register_instance
-    self.class.instance_variable_set("@train_number".to_sym,number.to_s)
+    @train_number = number.to_s
+    #self.class.instance_variable_set("@train_number".to_sym,number.to_s)
     @speed = 0
     @route = []
     @railway_carriage = []
     valid?
   end
 
-  def self.try_valid
-    validate :train_number, :format, /^(\d|[a..z]){3}_?(\d|[a..z]){2}$/i
-  end
+  validate :train_number, :format, /^(\d|[a..z]){3}_?(\d|[a..z]){2}$/i
 
   def send_railway_carriage(&block)
     @railway_carriage.each { |rc| block.call(rc) }
@@ -65,9 +64,6 @@ class Train
   end
 
   private # данные методы используются для поиска следующей и предыдущей станции
-
-
-
 
   def previous_station
     current_dest = @route.find_index(@current_station)

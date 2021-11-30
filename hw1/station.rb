@@ -3,18 +3,16 @@ class Station
   include Accessors
   include Validation
 
-  attr_reader :trains, :name
+  attr_accessor_with_history :trains, :name
 
   def initialize(name)
     register_instance
-    self.class.instance_variable_set("@name".to_sym,name)
+    @name = name
     @trains = []
     valid?
   end
 
-  def self.try_valid
-    validate :name, :presence
-  end
+  validate :name, :presence
 
   def add_train(train)
     @trains << train

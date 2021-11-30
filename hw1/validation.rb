@@ -6,38 +6,42 @@ module Validation
   end
 
   module ClassMethods
+    attr_reader :array
+
     def validate(*args)
-      name=args[0]
-      type_of_validation=args[1].to_s
-      config=args[2] if !args[2].nil?
-      var_name = "@#{name}".to_sym
-      puts "1.#{config}, #{var_name} #{type_of_validation}"
-      puts "2.#{instance_variable_get(var_name)}" # при изменении переменной через accessor данная строка дает значение установленное при инициализации,
-      # не очень понятно почему, когда в основной программе значение переменной меняется
-      case type_of_validation
-      when "presence"
-        raise "Тип параметра #{var_name} не соответсвует необходимому" if instance_variable_get(var_name).nil? || instance_variable_get(var_name) == ""
-      when "format"
-        raise "Тип параметра #{var_name} не соответсвует необходимому" if instance_variable_get(var_name) !~ config
-      when "type"
-        raise "Тип параметра #{var_name} не соответсвует необходимому" if instance_variable_get(var_name).class != config
-      end
+      @array = [] if @array.nil?
+      hash = { "type" => args[1].to_s, "var" => "@#{args[0]}".to_sym, "params" => args[2] }
+      @array.push(hash)
     end
 
   end
 
   module InstanceMethods
     def validate!
-      puts "#{self.class}"
-      self.class.try_valid
+      self.class.array.each do |element|
+        self.validate_format(element["var"], element["type"], element["params"])
+      end
     end
 
     def valid?
-      validate!
+      self.validate!
       true
     rescue RuntimeError => e
       puts e.inspect
       false
+    end
+
+    private
+
+    def validate_format(var, type, params)
+      case type
+      when "presence"
+        raise "Тип параметра #{var} не соответсвует необходимому" if instance_variable_get(var).nil? || instance_variable_get(var) == ""
+      when "format"
+        raise "Тип параметра #{var} не соответсвует необходимому" if instance_variable_get(var) !~ params
+      when "type"
+        raise "Тип параметра #{var} не соответсвует необходимому" if instance_variable_get(var).class.to_s != params
+      end
     end
 
   end
