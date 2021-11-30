@@ -20,6 +20,7 @@ class Train
   end
 
   validate :train_number, :format, /^(\d|[a..z]){3}_?(\d|[a..z]){2}$/i
+  validate :train_number, :und_format, /^(\d|[a..z]){3}_?(\d|[a..z]){2}$/i
 
   def send_railway_carriage(&block)
     @railway_carriage.each { |rc| block.call(rc) }
