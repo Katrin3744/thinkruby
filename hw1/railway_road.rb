@@ -5,6 +5,28 @@ class RailwayRoad
     @routes = []
   end
 
+  def seed
+    t = Train.new("100") # невалидный формат номера
+    #t2=CargoTrain.new("12")
+    st1 = Station.new("a")
+    st2 = Station.new("") # невалидный формат имени
+    route = Route.new(st1, st2)
+    route2 = Route.new("", st1) # невалидный формат первого аргумента
+    t.train_number = "10000"
+    puts "Новый номер поезда #{t.train_number}"
+    puts "Являетсяли ли теперь номер валидным #{t.valid?}"
+    t.train_route_add(route)
+    t.transition_forward
+    t.current_station = "aaaaa"
+    t.current_station = "bbbbb"
+    puts "История станций, на которых был поезд #{t.current_station_history}"
+    rc1 = RailwayCarriage.new("1", "12")
+    rc2 = RailwayCarriage.new("1", "12")
+    #rc3=PassengerRC.new("2","")
+    t.hook_up(rc1)
+    t.hook_up(rc2)
+  end
+
   def menu
     number = 1
     while number != 0
